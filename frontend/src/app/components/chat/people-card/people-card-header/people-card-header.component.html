@@ -1,0 +1,16 @@
+<div class="card-header">
+  <div class="input-group">
+    <input type="text" placeholder="minu nimi" [(ngModel)]="personName" name="" class="form-control search">
+    <div class="input-group-prepend">
+      <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
+    </div>
+  </div>
+  <br>
+  <div class="input-group">
+    <input type="text" placeholder="chati nimi" [(ngModel)]="chatName" name="" class="form-control search">
+    <div class="input-group-prepend">
+      <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
+    </div>
+  </div>
+</div>
+<button (click)="joinChat()"> joini</button>
