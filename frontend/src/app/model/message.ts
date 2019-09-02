@@ -1,16 +1,14 @@
 import {Person} from "./person";
-import {ChatSession} from "./chatsession";
 
 export class Message {
-    id: bigint;
-    content: string;
-    isSent: boolean;
-    sentBy: Person;
-    session: ChatSession;
+
+    payload: string;
+    sender: Person;
 
 
-    constructor(content: string, sentBy: Person) {
-        this.content = content;
-        this.sentBy = sentBy;
+    constructor(content: string, sender: Person) {
+        this.payload = content;
+        this.sender = sender;
+
     }
 }

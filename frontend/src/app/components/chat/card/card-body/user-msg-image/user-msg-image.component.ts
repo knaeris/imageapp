@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {Person} from "../../../../../model/person";
 
 @Component({
   selector: 'app-user-msg-image',
@@ -7,6 +8,7 @@ import {Component, OnInit} from '@angular/core';
 })
 export class UserMsgImageComponent implements OnInit {
 
+  @Input() participant: Person;
   constructor() { }
 
   ngOnInit() {

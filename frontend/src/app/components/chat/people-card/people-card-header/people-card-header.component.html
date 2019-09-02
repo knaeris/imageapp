@@ -1,16 +1,18 @@
 <div class="card-header">
   <div class="input-group">
-    <input type="text" placeholder="minu nimi" [(ngModel)]="personName" name="" class="form-control search">
+    <input type="text" placeholder="minu nimi" [(ngModel)]="personName" class="form-control search">
     <div class="input-group-prepend">
-      <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
+      <span class="input-group-text search_btn">
+        <i (click)="changeName()" >change</i></span>
     </div>
   </div>
   <br>
   <div class="input-group">
-    <input type="text" placeholder="chati nimi" [(ngModel)]="chatName" name="" class="form-control search">
+    <input type="text" placeholder="chati nimi" [(ngModel)]="chatName" class="form-control search">
     <div class="input-group-prepend">
-      <span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
+      <span class="input-group-text search_btn">
+        <i (click)="joinChat()" >join</i>
+      </span>
     </div>
   </div>
 </div>
-<button (click)="joinChat()"> joini</button>

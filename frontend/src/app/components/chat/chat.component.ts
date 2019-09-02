@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ChatSession} from "../../model/chatsession";
+import {Person} from "../../model/person";
 
 @Component({
   selector: 'app-chat',
@@ -7,9 +8,12 @@ import {ChatSession} from "../../model/chatsession";
   styleUrls: ['./chat.component.css'],
     //encapsulation: ViewEncapsulation.None // <------
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
 
-  chat:ChatSession;
+  session:ChatSession;
+  id: number = 0;
+  name: string = "";
+  person: Person;
 
   constructor() { }
 
@@ -17,6 +21,9 @@ export class ChatComponent implements OnInit {
   }
 
   getChatFromChild($event){
-    this.chat = $event;
+    this.session = $event;
+  }
+
+  ngOnDestroy(): void {
   }
 }

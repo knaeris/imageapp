@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ChatSession} from "../../../../model/chatsession";
+import {AuthService} from "../../../../services/auth.service";
 
 @Component({
   selector: 'app-people-card-body',
@@ -10,9 +11,13 @@ export class PeopleCardBodyComponent implements OnInit {
 
   @Input() chat: ChatSession;
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
+  }
+
+  getYourId(){
+    return this.authService.person.id;
   }
 
 }

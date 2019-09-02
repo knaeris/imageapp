@@ -7,7 +7,7 @@ import {Post} from "../model/post";
 })
 export class PostService extends BaseService {
 
-    public getPostById(id: bigint): Promise<Post> {
+    public getPostById(id: bigint): Post {
         return super.get("threads/" + id)
     }
 }

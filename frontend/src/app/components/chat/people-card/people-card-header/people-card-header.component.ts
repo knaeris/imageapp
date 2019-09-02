@@ -1,6 +1,10 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {ChatService} from "../../../../services/chat.service";
 import {ChatSession} from "../../../../model/chatsession";
+import {Person} from "../../../../model/person";
+import {Observable} from "rxjs";
+import {AuthService} from "../../../../services/auth.service";
+import {WebsocketService} from "../../../../services/websocket.service";
 
 @Component({
     selector: 'app-people-card-header',
@@ -11,16 +15,42 @@ export class PeopleCardHeaderComponent implements OnInit {
 
     personName: string;
     chatName: string;
-    @Output() chatOutput = new EventEmitter<ChatSession>();
+    chat$: Observable<ChatSession>;
+    chat: ChatSession = new ChatSession("");
+    @Output() dataToPass: EventEmitter<any> = new EventEmitter<any>();
+    person$: Observable<Person>;
 
-    constructor(private chatService: ChatService) {
+
+    constructor(private chatService: ChatService,
+                private websocketService:WebsocketService,
+                private authService:AuthService) {
     }
 
     ngOnInit() {
     }
 
     joinChat() {
-        this.chatService.join(this.chatName, true, this.personName)
-            .then(chat => this.chatOutput.emit(chat))
+        if (!(sessionStorage.getItem("X-ID") && sessionStorage.getItem("X-Name")) || this.chatName != this.chat.name) {
+            this.chat$ = this.chatService.join(this.chatName, this.personName);
+            this.chat$.subscribe(val => {
+                this.chat = <ChatSession>val
+                this.emit(this.chat);
+                this.websocketService.connect();
+            });
+        }
+    }
+
+    emit(data: any) {
+        this.dataToPass.emit(data);
+    }
+
+    changeName() {
+        let id = parseInt(sessionStorage.getItem("X-ID"));
+        this.chat$ = this.chatService.changeName(this.chat.name, this.personName, id);
+        this.chat$.subscribe(val => {
+            this.chat = <ChatSession>val
+            this.emit(this.chat);
+        });
+
     }
 }

@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {AuthService} from "../../../../services/auth.service";
 
 @Component({
   selector: 'app-card-body',
@@ -7,9 +8,12 @@ import {Component, OnInit} from '@angular/core';
 })
 export class CardBodyComponent implements OnInit {
 
-  constructor() { }
+  constructor(public authService: AuthService) { }
 
   ngOnInit() {
   }
 
+  getId(){
+    return this.authService.getId();
+  }
 }

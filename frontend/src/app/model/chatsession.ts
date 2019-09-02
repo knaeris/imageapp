@@ -1,13 +1,14 @@
 import {Person} from "./person";
-import {Message} from "./message";
+
 
 export class ChatSession {
 
     name: string;
 
-    isPublic: boolean;
+    participants: Set<Person>
 
-    participants: Set<Person>;
 
-    chatLog: Set<Message>;
+    constructor(name: string) {
+        this.name = name;
+    }
 }

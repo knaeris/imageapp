@@ -1,10 +1,18 @@
 import {Component} from '@angular/core';
+import * as SockJS from 'sockjs-client';
+import * as Stomp from 'stompjs';
+import {WebsocketService} from "./services/websocket.service";
 
 @Component({
-  selector: 'app-root',
+    selector: 'app-root',
     templateUrl: './app.component.html',
-  styles: []
+    styles: []
 })
 export class AppComponent {
-  title = 'frontend';
+    title = 'frontend';
+    jouki: string = "";
+
+    constructor(private ws: WebsocketService) {
+    }
+
 }

@@ -1,4 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {Message} from "../../../../../model/message";
+import {AuthService} from "../../../../../services/auth.service";
 
 @Component({
   selector: 'app-my-message',
@@ -7,9 +9,14 @@ import {Component, OnInit} from '@angular/core';
 })
 export class MyMessageComponent implements OnInit {
 
-  constructor() { }
+  @Input() message: Message;
+  constructor(private authService:AuthService) { }
 
   ngOnInit() {
+  }
+
+  deletes(){
+    this.authService.person.subscribedMessages.delete(this.message)
   }
 
 }

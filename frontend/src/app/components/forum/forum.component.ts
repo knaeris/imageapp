@@ -18,9 +18,7 @@ export class ForumComponent implements OnInit {
   }
 
   private getThreads(){
-    this.threadService.getAllThreads().then(result =>{
-      this.threads = result;
-    })
+    this.threadService.getAllThreads();
   }
 
 }

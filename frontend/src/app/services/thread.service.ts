@@ -7,11 +7,11 @@ import {Thread} from "../model/thread";
 })
 export class ThreadService extends BaseService{
 
-    public getAllThreads(): Promise<Thread[]>{
+    public getAllThreads(): Thread[]{
         return super.get("threads")
     }
 
-    public getThreadById(id: bigint): Promise<Thread>{
+    public getThreadById(id: number):Thread{
         return super.get("threads/" + id);
     }
 }

@@ -8,7 +8,7 @@ import {PostService} from './services/post.service'
 import {ThreadService} from "./services/thread.service";
 import {BaseService} from "./services/base.service";
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import {HeaderInterceptor} from "./interceptors/header.interceptor";
+import {AuthInterceptor} from "./interceptors/auth.interceptor";
 import {HeaderComponent} from './components/header/header.component';
 import {FooterComponent} from './components/footer/footer.component';
 import {ForumComponent} from './components/forum/forum.component';
@@ -29,6 +29,8 @@ import {ContactComponent} from './components/chat/people-card/people-card-body/c
 import {ContactInfoComponent} from './components/chat/people-card/people-card-body/contact/contact-info/contact-info.component'
 import {FormsModule} from "@angular/forms";
 import {ChatService} from "./services/chat.service";
+import {AuthService} from "./services/auth.service";
+import {WebsocketService} from "./services/websocket.service";
 
 @NgModule({
     declarations: [
@@ -63,9 +65,9 @@ import {ChatService} from "./services/chat.service";
     ],
     providers: [{
         provide: HTTP_INTERCEPTORS,
-        useClass: HeaderInterceptor,
+        useClass: AuthInterceptor,
         multi: true
-    }, PostService, ThreadService, BaseService, ChatService],
+    }, PostService, ThreadService, BaseService, ChatService, AuthService, WebsocketService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

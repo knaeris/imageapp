@@ -1,8 +1,4 @@
-    <app-others-message></app-others-message>
-    <app-my-message></app-my-message>
-    <app-my-message></app-my-message>
-    <app-my-message></app-my-message>
-    <app-my-message></app-my-message>
-    <app-my-message></app-my-message>
-    <app-my-message></app-my-message>
-    <app-my-message></app-my-message>
+<div *ngFor="let message of authService.person?.subscribedMessages">
+<app-others-message *ngIf="message.sender.id != getId()" [message] = message></app-others-message>
+    <app-my-message *ngIf="message.sender.id == getId()" [message] = message></app-my-message>
+</div>

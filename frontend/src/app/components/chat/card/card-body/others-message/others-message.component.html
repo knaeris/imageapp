@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-start mb-4">
-  <app-user-msg-image></app-user-msg-image>
+  <app-user-msg-image [participant]="message?.sender"></app-user-msg-image>
   <div class="msg_cotainer">
-    Hi, how are you samim?
+    {{message?.payload}}
     <span class="msg_time">8:40 AM, Today</span>
   </div>
 </div>
