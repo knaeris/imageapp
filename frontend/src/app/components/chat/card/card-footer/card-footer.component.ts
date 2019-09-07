@@ -6,6 +6,7 @@ import {Observable} from "rxjs";
 import {AuthService} from "../../../../services/auth.service";
 import {WebsocketService} from "../../../../services/websocket.service";
 import {Person} from "../../../../model/person";
+import {Operationenum} from "../../../../model/operationenum";
 
 @Component({
   selector: 'app-card-footer',
@@ -27,9 +28,11 @@ export class CardFooterComponent implements OnInit {
 
   send(){
     let sender: Person = this.authService.person;
-    let messageJSON: string = JSON.stringify(new Message(this.content, sender))
+    let messageForSending  = new Message(this.content, sender, Operationenum.SEND);
+    let messageJSON: string = JSON.stringify(messageForSending)
     //console.log()
-    this.websocketService.sendMessage(messageJSON);
+    this.websocketService.sendMessage(messageJSON, this.chat.name);
+    this.content = "";
     //this.message$.subscribe( x => this.authService.person.subscribedMessages.add(x));
   }
 }

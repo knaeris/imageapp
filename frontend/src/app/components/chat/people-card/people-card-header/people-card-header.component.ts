@@ -5,6 +5,7 @@ import {Person} from "../../../../model/person";
 import {Observable} from "rxjs";
 import {AuthService} from "../../../../services/auth.service";
 import {WebsocketService} from "../../../../services/websocket.service";
+import {Operationenum} from "../../../../model/operationenum";
 
 @Component({
     selector: 'app-people-card-header',
@@ -30,12 +31,21 @@ export class PeopleCardHeaderComponent implements OnInit {
     }
 
     joinChat() {
-        if (!(sessionStorage.getItem("X-ID") && sessionStorage.getItem("X-Name")) || this.chatName != this.chat.name) {
+        if (!(sessionStorage.getItem("X-ID")) || this.chatName != this.chat.name) {
             this.chat$ = this.chatService.join(this.chatName, this.personName);
             this.chat$.subscribe(val => {
                 this.chat = <ChatSession>val
                 this.emit(this.chat);
-                this.websocketService.connect();
+                this.authService.session = this.chat;
+                this.websocketService.connect(this.chatName);
+                setTimeout(()=> {
+                    this.websocketService.join(
+                        JSON.stringify({
+                        'name': this.personName,
+                        'operation': Operationenum.JOIN}),
+                        this.chatName);
+                },500);
+
             });
         }
     }

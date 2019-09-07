@@ -1,28 +1,22 @@
 import {Injectable} from "@angular/core";
 import {Person} from "../model/person";
 import {ChatSession} from "../model/chatsession";
+import {Observable} from "rxjs";
 
 @Injectable()
 export class AuthService{
     person: Person;
+    person$: Observable<Person>;
     session: ChatSession;
 
     public authenticate(id: number){
-        let that = this;
-        this.session.participants.forEach((item)=>{
-            if(item.id == id){
-                that.person = item;
-            }
-        }, this);
-
-
-        /*this.person$ = new Observable((observer) => {
+        this.person$ = new Observable((observer) => {
             observer.next(new Person(id, name));
             observer.complete();
-        })
+        });
         if(!this.person){
             return this.person = new Person(id, name);
-        }*/
+        }
     }
 
     public getId(){

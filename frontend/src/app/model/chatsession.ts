@@ -5,7 +5,7 @@ export class ChatSession {
 
     name: string;
 
-    participants: Set<Person>
+    participants: Person[] = [];
 
 
     constructor(name: string) {

@@ -16,7 +16,7 @@ export class MyMessageComponent implements OnInit {
   }
 
   deletes(){
-    this.authService.person.subscribedMessages.delete(this.message)
+    this.authService.person.subscribedMessages.filter(message => message != this.message);
   }
 
 }

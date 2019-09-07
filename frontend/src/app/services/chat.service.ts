@@ -19,4 +19,8 @@ export class ChatService extends BaseService{
         return super.put("chat/" + chatName + "/changename/" + id, newName)
     }
 
+    public getParticipantsOf(room): Observable<Person[]>{
+        return super.get("chat/" + room + "/participants");
+    }
+
 }
