@@ -39,7 +39,8 @@ export class WebsocketService {
         switch (wsMessage.operation) {
             case Operationenum.JOIN:
                 if (!participant.id){
-                    let person:Person = wsMessage.objectJSON;
+                    let person:Person = wsMessage.payload;
+                    participant.name = person.name;
                     participant.id = person.id;
                     participant.imageUrl = person.imageUrl;
                 }
@@ -52,7 +53,8 @@ export class WebsocketService {
     }
 
     private pushToMessages(wsMessage: Socketmessage, participant: Person) {
-        let message: Message = new Message(wsMessage.objectJSON.payload, wsMessage.objectJSON.sender);
+        let message: Message = new Message(wsMessage.payload.payload, wsMessage.payload.sender);
+        message.timeStamp = wsMessage.payload.timeStamp;
         participant.subscribedMessages.push(message);
     }
 

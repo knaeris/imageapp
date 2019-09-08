@@ -30,26 +30,31 @@ export class ChatComponent implements OnInit, OnDestroy {
   joinChat(room: string, participantName: string) {
       if(!ChatComponent.chat || ChatComponent.chat.name != room){
       ChatComponent.chat = new ChatSession(room);
-      ChatComponent.participant = new Person(participantName)
+      ChatComponent.participant = new Person("");
       this.webSocketService.connect(ChatComponent.chat, ChatComponent.participant);
         setTimeout(()=> {
-          this.webSocketService.join(
-              JSON.stringify({
-                'name': participantName,
-                'operation': Operationenum.JOIN}),
-              room);
+            this.join(participantName, room);
         },500);
   }
   }
 
-  send(content){
-    let messageForSending  = new Message(content, ChatComponent.participant);
+    private join(participantName: string, room: string) {
+        let message: Socketmessage = new Socketmessage(null);
+        message.payload = participantName;
+        message.operation = Operationenum.JOIN;
+        this.webSocketService.join(JSON.stringify(message), room);
+    }
+
+    sendMessage(content){
+      let sender: Person = new Person(this.getParticipant().name);
+      sender.id = this.getParticipant().id;
+      sender.imageUrl = this.getParticipant().imageUrl;
+    let messageForSending  = new Message(content, sender);
     let messageJSON: string = JSON.stringify(messageForSending);
-      let m: Socketmessage = new Socketmessage(null);
-      m.objectJSON = messageJSON;
-      m.operation = Operationenum.SEND;
-      let s: string = JSON.stringify(m);
-    this.webSocketService.sendMessage(s, ChatComponent.chat.name);
+      let message: Socketmessage = new Socketmessage(null);
+      message.payload = messageJSON;
+      message.operation = Operationenum.SEND;
+    this.webSocketService.sendMessage(JSON.stringify(message), ChatComponent.chat.name);
   }
 
   getChat(){
@@ -59,7 +64,11 @@ export class ChatComponent implements OnInit, OnDestroy {
       return ChatComponent.participant;
   }
 
+  getMessages(){
+      return ChatComponent.participant.subscribedMessages;
+  }
+
   deleteMessage(message: Message){
-      ChatComponent.participant.subscribedMessages = ChatComponent.participant.subscribedMessages.filter(m => m != message)
+      ChatComponent.participant.subscribedMessages = this.getMessages().filter(m => m != message)
   }
 }

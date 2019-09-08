@@ -4,7 +4,7 @@ import {Message} from "./message";
 
 export class Socketmessage{
     operation: Operationenum;
-    objectJSON: any;
+    payload: any;
 
 
     constructor(message: string) {
@@ -12,9 +12,9 @@ export class Socketmessage{
             return;
         }
         this.operation = JSON.parse(message).operation;
-        let objectJSONString = JSON.parse(message).objectJSON;
-        if(objectJSONString){
-            this.objectJSON = JSON.parse(objectJSONString);
+        let payloadString = JSON.parse(message).payload;
+        if(payloadString){
+            this.payload = JSON.parse(payloadString);
         }
     }
 }

@@ -27,8 +27,8 @@ export class CardFooterComponent extends CardComponent implements OnInit {
   ngOnInit() {
   }
 
-  send(){
-    super.send(this.content)
+  sendMessage(){
+    super.sendMessage(this.content)
     this.content = "";
   }
 }

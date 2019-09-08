@@ -7,7 +7,7 @@ export class Message implements Websocketmessage{
 
     payload: string;
     sender: Person;
-
+    timeStamp: number;
 
     constructor(content: string, sender: Person) {
         this.payload = content;

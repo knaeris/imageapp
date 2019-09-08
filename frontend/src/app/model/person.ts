@@ -5,8 +5,6 @@ import {Websocketmessage} from "./websocketmessage";
 
 export class Person implements Websocketmessage{
 
-    operation: Operationenum;
-
     id: number;
 
     name: string;
@@ -18,10 +16,6 @@ export class Person implements Websocketmessage{
 
     constructor(name: string) {
         this.name = name;
-    }
-
-    getOperation(): Operationenum {
-        return this.operation;
     }
 
 
