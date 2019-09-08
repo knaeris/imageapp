@@ -24,13 +24,13 @@ import {PeopleCardFooterComponent} from './components/chat/people-card/people-ca
 import {MyMessageComponent} from './components/chat/card/card-body/my-message/my-message.component';
 import {OthersMessageComponent} from './components/chat/card/card-body/others-message/others-message.component';
 import {UserMsgImageComponent} from './components/chat/card/card-body/user-msg-image/user-msg-image.component';
-import {UserImgComponent} from './components/chat/user-img/user-img.component';
+import {UserImgComponent} from './components/chat/people-card/people-card-body/contact/user-img/user-img.component';
 import {ContactComponent} from './components/chat/people-card/people-card-body/contact/contact.component';
 import {ContactInfoComponent} from './components/chat/people-card/people-card-body/contact/contact-info/contact-info.component'
 import {FormsModule} from "@angular/forms";
 import {ChatService} from "./services/chat.service";
-import {AuthService} from "./services/auth.service";
 import {WebsocketService} from "./services/websocket.service";
+import { SystemMessageComponent } from './components/chat/card/card-body/system-message/system-message.component';
 
 @NgModule({
     declarations: [
@@ -54,6 +54,7 @@ import {WebsocketService} from "./services/websocket.service";
         UserImgComponent,
         ContactComponent,
         ContactInfoComponent,
+        SystemMessageComponent,
 
     ],
     imports: [
@@ -67,7 +68,7 @@ import {WebsocketService} from "./services/websocket.service";
         provide: HTTP_INTERCEPTORS,
         useClass: AuthInterceptor,
         multi: true
-    }, PostService, ThreadService, BaseService, ChatService, AuthService, WebsocketService],
+    }, PostService, ThreadService, BaseService, ChatService, WebsocketService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

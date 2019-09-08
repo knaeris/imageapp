@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
 import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
-import {AuthService} from "./auth.service";
 import {Websocketmessage} from "../model/websocketmessage";
 import {Operationenum} from "../model/operationenum";
 import {Message} from "../model/message";
@@ -9,38 +8,43 @@ import {Person} from "../model/person";
 import {isJsObject} from "@angular/core/src/change_detection/change_detection_util";
 import {ChatService} from "./chat.service";
 import {Observable} from "rxjs";
+import {ChatSession} from "../model/chatsession";
 
 @Injectable()
-export class WebsocketService{
-   private serverUrl = 'http://localhost:8080/socket';
-   private stompClient;
-   private channel = "/chat/";
+export class WebsocketService {
+    private serverUrl = 'http://localhost:8080/socket';
+    private stompClient;
+    private channel = "/chat/";
 
-   constructor(private authServ: AuthService, private chatService: ChatService){
+    constructor(private chatService: ChatService) {
 
-   }
+    }
 
-   connect(room) {
+    connect(room: ChatSession, participant: Person) {
         let ws = new SockJS(this.serverUrl);
         this.stompClient = Stomp.over(ws);
         const that = this;
-        this.stompClient.connect({}, (frame)=> {
-            that.stompClient.subscribe(that.channel + room, (event) => {
-                that.onMessageReceived(event.body);
+        this.stompClient.connect({}, (frame) => {
+            that.stompClient.subscribe(that.channel + room.name, (message) => {
+                that.onMessageReceived(message.body, room, participant);
             });
         }, this.errorCb);
     };
 
-    onMessageReceived(message) {
+    onMessageReceived(message: string, room: ChatSession, participant: Person) {
         console.log("Message Recieved from Server :: " + message);
 
         let obj: any  = JSON.parse(message);
         switch (obj.operation) {
             case Operationenum.JOIN:
-                this.changeMyName(obj);
+                if (!participant.id){
+                    participant.id = obj.id;
+                    participant.imageUrl = obj.imageUrl;
+                }
+                this.getAllParticipants(room);
                 break;
             case Operationenum.SEND :
-                this.authServ.person.subscribedMessages.push(JSON.parse(message))
+                participant.subscribedMessages.push(obj)
                 break;
         }
     }
@@ -54,7 +58,7 @@ export class WebsocketService{
     errorCb(error, room) {
         console.log("errorCallBack -> " + error)
         setTimeout(() => {
-            this.connect(room);
+           // this.connect(room);
         }, 5000);
     }
 
@@ -66,14 +70,15 @@ export class WebsocketService{
     }
 
 
-    private changeMyName(obj){
-        let ppl$:Observable<Person[]> = this.chatService.getParticipantsOf(this.authServ.session.name);
+    private getAllParticipants(room){
+        let ppl$:Observable<Person[]> = this.chatService.getParticipantsOf(room.name);
          let ppl = ppl$.subscribe(value  => {
-             this.authServ.session.participants =[];
+             room.participants =[];
              for(let b of value){
-                 let bb =new Person(b.id, b.name);
-                 bb.imageUrl = b.imageUrl
-                 this.authServ.session.participants.push(bb);
+                 let bb =new Person(b.name);
+                 bb.id = b.id;
+                 bb.imageUrl = b.imageUrl;
+                 room.participants.push(bb);
              }
          })
         setTimeout(()=>{

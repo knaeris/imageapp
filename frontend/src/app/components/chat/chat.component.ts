@@ -1,6 +1,12 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, Output} from '@angular/core';
 import {ChatSession} from "../../model/chatsession";
 import {Person} from "../../model/person";
+import {WebsocketService} from "../../services/websocket.service";
+import {ChatService} from "../../services/chat.service";
+import {Operationenum} from "../../model/operationenum";
+import {Observable} from "rxjs";
+import {Message} from "../../model/message";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-chat',
@@ -10,20 +16,47 @@ import {Person} from "../../model/person";
 })
 export class ChatComponent implements OnInit, OnDestroy {
 
-  session:ChatSession;
-  id: number = 0;
-  name: string = "";
-  person: Person;
+   static chat: ChatSession;
+   static participant: Person;
 
-  constructor() { }
+  constructor(protected webSocketService: WebsocketService,
+              protected chatService: ChatService) { }
 
   ngOnInit() {
   }
 
-  getChatFromChild($event){
-    this.session = $event;
+  ngOnDestroy(): void {
   }
 
-  ngOnDestroy(): void {
+  joinChat(room: string, participantName: string) {
+      if(!ChatComponent.chat || ChatComponent.chat.name != room){
+      ChatComponent.chat = new ChatSession(room);
+      ChatComponent.participant = new Person(participantName)
+      this.webSocketService.connect(ChatComponent.chat, ChatComponent.participant);
+        setTimeout(()=> {
+          this.webSocketService.join(
+              JSON.stringify({
+                'name': participantName,
+                'operation': Operationenum.JOIN}),
+              room);
+        },500);
+  }
+  }
+
+  send(content){
+    let messageForSending  = new Message(content, ChatComponent.participant, Operationenum.SEND);
+    let messageJSON: string = JSON.stringify(messageForSending)
+    this.webSocketService.sendMessage(messageJSON, ChatComponent.chat.name);
+  }
+
+  getChat(){
+      return ChatComponent.chat;
+  }
+  getParticipant(){
+      return ChatComponent.participant;
+  }
+
+  deleteMessage(message: Message){
+      ChatComponent.participant.subscribedMessages = ChatComponent.participant.subscribedMessages.filter(m => m != message)
   }
 }

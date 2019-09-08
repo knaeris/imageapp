@@ -1,22 +1,30 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Message} from "../../../../../model/message";
-import {AuthService} from "../../../../../services/auth.service";
+import {CardBodyComponent} from "../card-body.component";
+import {WebsocketService} from "../../../../../services/websocket.service";
+import {ChatService} from "../../../../../services/chat.service";
+import {AppComponent} from "../../../../../app.component";
+import {ChatComponent} from "../../../chat.component";
 
 @Component({
   selector: 'app-my-message',
   templateUrl: './my-message.component.html',
   styleUrls: ['./my-message.component.css']
 })
-export class MyMessageComponent implements OnInit {
+export class MyMessageComponent extends CardBodyComponent implements OnInit {
 
   @Input() message: Message;
-  constructor(private authService:AuthService) { }
+
+  constructor(webSocketService: WebsocketService,
+              chatService: ChatService) {
+    super(webSocketService, chatService);
+  }
 
   ngOnInit() {
   }
 
   deletes(){
-    this.authService.person.subscribedMessages.filter(message => message != this.message);
+    super.deleteMessage(this.message);
   }
 
 }

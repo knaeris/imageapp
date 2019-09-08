@@ -1,5 +1,9 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ChatSession} from "../../../model/chatsession";
+import {ChatComponent} from "../chat.component";
+import {WebsocketService} from "../../../services/websocket.service";
+import {ChatService} from "../../../services/chat.service";
+import {AppComponent} from "../../../app.component";
 
 @Component({
   selector: 'app-people-card',
@@ -7,17 +11,18 @@ import {ChatSession} from "../../../model/chatsession";
   styleUrls: ['./people-card.component.css']
 })
 
-export class PeopleCardComponent implements OnInit {
-  chat:ChatSession;
-  @Output() chatOutPut = new EventEmitter<ChatSession>();
+export class PeopleCardComponent extends ChatComponent implements OnInit {
 
-  constructor() { }
+  constructor(webSocketService: WebsocketService,
+               chatService: ChatService) {
+    super(webSocketService,chatService);
+  }
 
   ngOnInit() {
   }
-
-  emit($event){
-    this.chat = $event;
-    this.chatOutPut.emit(this.chat)
-  }
+log(){
+    console.log(this.getParticipant())
+  console.log(this.getParticipant().id)
+  console.log(this.getChat())
+}
 }

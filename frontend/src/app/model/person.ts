@@ -16,8 +16,7 @@ export class Person implements Websocketmessage{
     subscribedMessages: Message[] = [];
 
 
-    constructor(id: number, name: string) {
-        this.id = id;
+    constructor(name: string) {
         this.name = name;
     }
 
