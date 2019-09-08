@@ -1,12 +1,11 @@
-import {Component, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ChatSession} from "../../model/chatsession";
 import {Person} from "../../model/person";
 import {WebsocketService} from "../../services/websocket.service";
 import {ChatService} from "../../services/chat.service";
 import {Operationenum} from "../../model/operationenum";
-import {Observable} from "rxjs";
 import {Message} from "../../model/message";
-import {AppComponent} from "../../app.component";
+import {Socketmessage} from "../../model/socketmessage";
 
 @Component({
   selector: 'app-chat',
@@ -44,9 +43,13 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   send(content){
-    let messageForSending  = new Message(content, ChatComponent.participant, Operationenum.SEND);
-    let messageJSON: string = JSON.stringify(messageForSending)
-    this.webSocketService.sendMessage(messageJSON, ChatComponent.chat.name);
+    let messageForSending  = new Message(content, ChatComponent.participant);
+    let messageJSON: string = JSON.stringify(messageForSending);
+      let m: Socketmessage = new Socketmessage(null);
+      m.objectJSON = messageJSON;
+      m.operation = Operationenum.SEND;
+      let s: string = JSON.stringify(m);
+    this.webSocketService.sendMessage(s, ChatComponent.chat.name);
   }
 
   getChat(){

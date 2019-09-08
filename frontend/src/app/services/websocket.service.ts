@@ -9,6 +9,8 @@ import {isJsObject} from "@angular/core/src/change_detection/change_detection_ut
 import {ChatService} from "./chat.service";
 import {Observable} from "rxjs";
 import {ChatSession} from "../model/chatsession";
+import {WebSocketMessage} from "rxjs/internal/observable/dom/WebSocketSubject";
+import {Socketmessage} from "../model/socketmessage";
 
 @Injectable()
 export class WebsocketService {
@@ -33,20 +35,25 @@ export class WebsocketService {
 
     onMessageReceived(message: string, room: ChatSession, participant: Person) {
         console.log("Message Recieved from Server :: " + message);
-
-        let obj: any  = JSON.parse(message);
-        switch (obj.operation) {
+        let wsMessage:Socketmessage = new Socketmessage(message);
+        switch (wsMessage.operation) {
             case Operationenum.JOIN:
                 if (!participant.id){
-                    participant.id = obj.id;
-                    participant.imageUrl = obj.imageUrl;
+                    let person:Person = wsMessage.objectJSON;
+                    participant.id = person.id;
+                    participant.imageUrl = person.imageUrl;
                 }
                 this.getAllParticipants(room);
                 break;
             case Operationenum.SEND :
-                participant.subscribedMessages.push(obj)
+                this.pushToMessages(wsMessage, participant);
                 break;
         }
+    }
+
+    private pushToMessages(wsMessage: Socketmessage, participant: Person) {
+        let message: Message = new Message(wsMessage.objectJSON.payload, wsMessage.objectJSON.sender);
+        participant.subscribedMessages.push(message);
     }
 
     disconnect() {

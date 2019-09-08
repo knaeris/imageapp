@@ -29,5 +29,6 @@ export class CardFooterComponent extends CardComponent implements OnInit {
 
   send(){
     super.send(this.content)
+    this.content = "";
   }
 }
