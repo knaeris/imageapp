@@ -1,11 +1,17 @@
 <div class="card-footer">
+  <form (ngSubmit)="sendMessage()">
   <div class="input-group">
     <div class="input-group-append">
       <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
     </div>
-    <textarea name="" class="form-control type_msg" [(ngModel)]="content" placeholder="Type your message..."></textarea>
+    <input name="" class="form-control type_msg" [(ngModel)]="content" [ngModelOptions]="{standalone: true}"
+           *ngIf="getChat()?.name" autofocus
+           placeholder="Type your message..."/>
     <div class="input-group-append">
-      <span class="input-group-text send_btn"><i class="fas fa-location-arrow" (click)="sendMessage()"></i></span>
+      <span class="input-group-text send_btn">
+        <i (click)="sendMessage()" class="fas fa-location-arrow">
+        </i></span>
     </div>
   </div>
+  </form>
 </div>

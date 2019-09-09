@@ -7,12 +7,16 @@
     </div>
   </div>
   <br>
+    <form (ngSubmit)="joinChat()">
   <div class="input-group">
-    <input type="text" placeholder="chati nimi" [(ngModel)]="chatName" class="form-control search">
+    <input type="text" placeholder="chati nimi"
+           [(ngModel)]="chatName" [ngModelOptions]="{standalone: true}"
+           class="form-control search">
     <div class="input-group-prepend">
       <span class="input-group-text search_btn">
         <i (click)="joinChat()" >join</i>
       </span>
     </div>
   </div>
+    </form>
 </div>

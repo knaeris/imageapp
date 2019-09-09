@@ -1,4 +1,7 @@
 export enum Operationenum {
     JOIN= "JOIN",
-    SEND= "SEND"
+    SEND= "SEND",
+    DELETE="DELETE",
+    LEAVE="LEAVE",
+    EXCEPTION="EXCEPTION"
 }

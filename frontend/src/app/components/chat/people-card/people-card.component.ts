@@ -24,5 +24,6 @@ log(){
     console.log(this.getParticipant())
   console.log(this.getParticipant().id)
   console.log(this.getChat())
+  super.leave();
 }
 }

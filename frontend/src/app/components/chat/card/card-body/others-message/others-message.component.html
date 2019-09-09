@@ -2,6 +2,6 @@
   <app-user-msg-image [participant]="message?.sender"></app-user-msg-image>
   <div class="msg_cotainer">
     {{message?.payload}}
-    <span class="msg_time">8:40 AM, Today</span>
+    <span class="msg_time">{{parsetoDate(message?.timeStamp)}}</span>
   </div>
 </div>

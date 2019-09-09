@@ -1,4 +1,5 @@
 import {Person} from "./person";
+import {ChatComponent} from "../components/chat/chat.component";
 
 
 export class ChatSession {

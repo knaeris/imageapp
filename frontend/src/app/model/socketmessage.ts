@@ -13,8 +13,18 @@ export class Socketmessage{
         }
         this.operation = JSON.parse(message).operation;
         let payloadString = JSON.parse(message).payload;
-        if(payloadString){
+        if(this.isJson(payloadString)){
             this.payload = JSON.parse(payloadString);
+        } else {
+            this.payload = payloadString;
         }
+    }
+     isJson(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
     }
 }

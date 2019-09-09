@@ -26,6 +26,8 @@ export class PeopleCardHeaderComponent extends PeopleCardComponent implements On
 
     joinChat() {
        super.joinChat(this.chatName, this.personName);
+       this.chatName = "";
+       this.personName = "";
     }
 
     changeName() {

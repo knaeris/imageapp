@@ -6,6 +6,8 @@
     background-color: #78e08f;
     padding: 10px;
     position: relative;
+    word-break: break-word;
+    min-width: 40px;
 }
 
 .msg_time_send{

@@ -1,15 +1,12 @@
 import {Injectable} from "@angular/core";
 import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
-import {Websocketmessage} from "../model/websocketmessage";
 import {Operationenum} from "../model/operationenum";
 import {Message} from "../model/message";
 import {Person} from "../model/person";
-import {isJsObject} from "@angular/core/src/change_detection/change_detection_util";
 import {ChatService} from "./chat.service";
 import {Observable} from "rxjs";
 import {ChatSession} from "../model/chatsession";
-import {WebSocketMessage} from "rxjs/internal/observable/dom/WebSocketSubject";
 import {Socketmessage} from "../model/socketmessage";
 
 @Injectable()
@@ -33,23 +30,51 @@ export class WebsocketService {
         }, this.errorCb);
     };
 
-    onMessageReceived(message: string, room: ChatSession, participant: Person) {
+    onMessageReceived(message: string, room: ChatSession, currentUser: Person) {
         console.log("Message Recieved from Server :: " + message);
-        let wsMessage:Socketmessage = new Socketmessage(message);
+        let wsMessage: Socketmessage = new Socketmessage(message);
         switch (wsMessage.operation) {
             case Operationenum.JOIN:
-                if (!participant.id){
-                    let person:Person = wsMessage.payload;
-                    participant.name = person.name;
-                    participant.id = person.id;
-                    participant.imageUrl = person.imageUrl;
+                if (!currentUser.id) {
+                    this.composeCurrentUser(wsMessage, currentUser);
                 }
                 this.getAllParticipants(room);
                 break;
             case Operationenum.SEND :
-                this.pushToMessages(wsMessage, participant);
+                this.pushToMessages(wsMessage, currentUser);
+                break;
+            case Operationenum.DELETE:
+
+                break;
+            case Operationenum.EXCEPTION :
+
+                break;
+            case Operationenum.LEAVE :
+                if (wsMessage.payload.payload == currentUser.name) {
+                    this.leaveChat(room, currentUser);
+                } else {
+                    wsMessage.payload.payload += " lahkus ruumist";
+                    this.pushToMessages(wsMessage, currentUser);
+                    this.getAllParticipants(room);
+                }
                 break;
         }
+    }
+
+    private leaveChat(room: ChatSession, currentUser: Person) {
+        room.name = null;
+        room.participants = [];
+        currentUser.name = null;
+        currentUser.id = null;
+        currentUser.imageUrl = null;
+        currentUser.subscribedMessages = [];
+    }
+
+    private composeCurrentUser(wsMessage: Socketmessage, currentUser: Person) {
+        let person: Person = wsMessage.payload;
+        currentUser.name = person.name;
+        currentUser.id = person.id;
+        currentUser.imageUrl = person.imageUrl;
     }
 
     private pushToMessages(wsMessage: Socketmessage, participant: Person) {
@@ -67,31 +92,30 @@ export class WebsocketService {
     errorCb(error, room) {
         console.log("errorCallBack -> " + error)
         setTimeout(() => {
-           // this.connect(room);
+            // this.connect(room);
         }, 5000);
     }
 
     sendMessage(message, room: string) {
         this.stompClient.send("/app/send/message/" + room, {}, message);
     }
+
     join(newPerson, room: string) {
         this.stompClient.send("/app/join/" + room, {}, newPerson);
     }
 
+    leave(room, name) {
+        this.stompClient.send("/app/leave/" + room, {}, name);
+    }
 
-    private getAllParticipants(room){
-        let ppl$:Observable<Person[]> = this.chatService.getParticipantsOf(room.name);
-         let ppl = ppl$.subscribe(value  => {
-             room.participants =[];
-             for(let b of value){
-                 let bb =new Person(b.name);
-                 bb.id = b.id;
-                 bb.imageUrl = b.imageUrl;
-                 room.participants.push(bb);
-             }
-         })
-        setTimeout(()=>{
+
+    private getAllParticipants(room) {
+        let ppl$: Observable<Person[]> = this.chatService.getParticipantsOf(room.name);
+        let ppl = ppl$.subscribe(value => {
+            room.participants = value;
+        });
+        setTimeout(() => {
             ppl.unsubscribe();
-        },100)
+        }, 100)
     }
 }
