@@ -16,7 +16,7 @@
 .user_img{
     height: 70px;
     width: 70px;
-    border:1.5px solid #f5f6fa;
+    border:1.5px solid lawngreen;
 
 }
 
@@ -28,7 +28,7 @@
     border-radius: 50%;
     bottom: 0.2em;
     right: 0.4em;
-    border:1.5px solid white;
+    border:1.5px solid lawngreen;
 }
 
 .user_info{

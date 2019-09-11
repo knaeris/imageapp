@@ -3,7 +3,7 @@
     <input type="text" placeholder="nimi"  [(ngModel)]="personName" class="form-control search">
     <div class="input-group-prepend">
       <span class="input-group-text search_btn">
-        <a *ngIf="getChat()" (click)="changeName()">Muuda</a></span>
+        <a *ngIf="getChat()" (click)="changeName()" class="matrix-green">Muuda</a></span>
     </div>
   </div>
   <br>
@@ -14,7 +14,7 @@
            class="form-control search">
     <div class="input-group-prepend">
       <span class="input-group-text search_btn">
-        <a (click)="joinChat()" >Liitu</a>
+        <a (click)="joinChat()" class="matrix-green">Liitu</a>
       </span>
     </div>
   </div>
