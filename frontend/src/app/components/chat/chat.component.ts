@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ChatSession} from "../../model/chatsession";
 import {Person} from "../../model/person";
 import {WebsocketService} from "../../services/websocket.service";
@@ -17,6 +17,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     static chat: ChatSession;
     static participant: Person;
+    static hasLeft: boolean = false;
 
     constructor(protected webSocketService: WebsocketService,
                 protected chatService: ChatService) {
@@ -29,13 +30,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     joinChat(room: string, participantName: string) {
-        if (!ChatComponent.chat || ChatComponent.chat.name != room) {
+        if (!ChatComponent.chat || (ChatComponent.chat && ChatComponent.chat.name != room)) {
             ChatComponent.chat = new ChatSession(room);
             ChatComponent.participant = new Person("");
             this.webSocketService.connect(ChatComponent.chat, ChatComponent.participant);
             setTimeout(() => {
                 this.join(participantName, room);
-            }, 500);
+            }, 501);
         }
     }
 
@@ -47,15 +48,25 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     sendMessage(content) {
+        let messageForSending = this.composeMessageForSending(content);
+        this.webSocketService.sendMessage(JSON.stringify(messageForSending), ChatComponent.chat.name);
+    }
+
+    private composeMessageForSending(content) {
+        let sender = this.composeSender();
+        let message = new Message(content, sender);
+        let messageJSON: string = JSON.stringify(message);
+        let messageForSending: Socketmessage = new Socketmessage(null);
+        messageForSending.payload = messageJSON;
+        messageForSending.operation = Operationenum.SEND;
+        return messageForSending;
+    }
+
+    private composeSender() {
         let sender: Person = new Person(this.getParticipant().name);
         sender.id = this.getParticipant().id;
         sender.imageUrl = this.getParticipant().imageUrl;
-        let messageForSending = new Message(content, sender);
-        let messageJSON: string = JSON.stringify(messageForSending);
-        let message: Socketmessage = new Socketmessage(null);
-        message.payload = messageJSON;
-        message.operation = Operationenum.SEND;
-        this.webSocketService.sendMessage(JSON.stringify(message), ChatComponent.chat.name);
+        return sender;
     }
 
     getChat() {
@@ -86,9 +97,23 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     leave() {
-        let sm: Socketmessage = new Socketmessage(null);
-        sm.payload = this.getParticipant().name;
-        sm.operation = Operationenum.LEAVE;
-        this.webSocketService.leave(this.getChat().name, JSON.stringify(sm));
+        if (this.getChat() && this.getParticipant()) {
+            let sm: Socketmessage = new Socketmessage(null);
+            sm.payload = this.getParticipant().name;
+            sm.operation = Operationenum.LEAVE;
+            this.webSocketService.leave(this.getChat().name, JSON.stringify(sm));
+            this.webSocketService.disconnect();
+            ChatComponent.chat = null;
+            ChatComponent.participant = null;
+        }
     }
+
+    @HostListener('window:beforeunload')
+    leaveChatAfterLeavingPage(){
+        if(!ChatComponent.hasLeft){
+            this.leave();
+            ChatComponent.hasLeft = true;
+        }
+    }
+
 }

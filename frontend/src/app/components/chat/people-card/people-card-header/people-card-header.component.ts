@@ -1,10 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {ChatService} from "../../../../services/chat.service";
-import {ChatSession} from "../../../../model/chatsession";
-import {Person} from "../../../../model/person";
-import {Observable} from "rxjs";
 import {WebsocketService} from "../../../../services/websocket.service";
-import {Operationenum} from "../../../../model/operationenum";
 import {PeopleCardComponent} from "../people-card.component";
 
 @Component({
@@ -14,8 +10,8 @@ import {PeopleCardComponent} from "../people-card.component";
 })
 export class PeopleCardHeaderComponent extends PeopleCardComponent implements OnInit {
 
-    personName: string;
-    chatName: string;
+    personName: string = "";
+    chatName: string = "";
 
     constructor(webSocketService: WebsocketService,
                  chatService: ChatService) {
@@ -25,9 +21,13 @@ export class PeopleCardHeaderComponent extends PeopleCardComponent implements On
     }
 
     joinChat() {
-       super.joinChat(this.chatName, this.personName);
-       this.chatName = "";
-       this.personName = "";
+        this.chatName.trim();
+        this.personName.trim()
+        if (this.chatName != "" && this.personName != "") {
+            super.joinChat(this.chatName, this.personName);
+            this.chatName = "";
+            this.personName = "";
+        }
     }
 
     changeName() {

@@ -50,24 +50,11 @@ export class WebsocketService {
 
                 break;
             case Operationenum.LEAVE :
-                if (wsMessage.payload.payload == currentUser.name) {
-                    this.leaveChat(room, currentUser);
-                } else {
                     wsMessage.payload.payload += " lahkus ruumist";
                     this.pushToMessages(wsMessage, currentUser);
                     this.getAllParticipants(room);
-                }
                 break;
         }
-    }
-
-    private leaveChat(room: ChatSession, currentUser: Person) {
-        room.name = null;
-        room.participants = [];
-        currentUser.name = null;
-        currentUser.id = null;
-        currentUser.imageUrl = null;
-        currentUser.subscribedMessages = [];
     }
 
     private composeCurrentUser(wsMessage: Socketmessage, currentUser: Person) {

@@ -21,9 +21,8 @@ export class PeopleCardComponent extends ChatComponent implements OnInit {
   ngOnInit() {
   }
 log(){
-    console.log(this.getParticipant())
-  console.log(this.getParticipant().id)
   console.log(this.getChat())
+  console.log(this.getParticipant())
   super.leave();
 }
 }

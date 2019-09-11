@@ -19,7 +19,7 @@ export class CardHeaderComponent extends CardComponent implements OnInit {
     }
 
     getParticipantNumber(): string {
-        if (this.getChat()) {
+        if (this.getChat() && this.getChat().participants) {
             let number = this.getChat().participants.length;
             return number != 1 ? number + " osalejat" : number + " osaleja";
         }

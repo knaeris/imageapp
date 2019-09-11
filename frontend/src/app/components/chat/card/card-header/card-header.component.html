@@ -5,11 +5,9 @@
       <p>{{getParticipantNumber()}}</p>
     </div>
     <div class="video_cam">
-      <span><i class="fas fa-video"></i></span>
-      <span><i class="fas fa-phone"></i></span>
     </div>
   </div>
-  <span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
+  <span id="action_menu_btn"><a *ngIf="getChat()">&#10062;</a></span>
   <div class="action_menu">
     <ul>
       <li><i class="fas fa-user-circle"></i> View profile</li>
