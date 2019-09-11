@@ -2,9 +2,11 @@
   <form (ngSubmit)="sendMessage()">
   <div *ngIf="getChat()" class="input-group">
     <div class="input-group-append">
-      <ng-template #emojiPopover><div [innerHtml]="getEmojis()"></div></ng-template>
+      <ng-template #emojiPopover>
+        <app-emoji (emojiEmitter)="gg($event)" [emojis]="getEmojis()"></app-emoji>
+      </ng-template>
       <span class="input-group-text attach_btn">
-        <a [ngbPopover]="emojiPopover" placement="right-bottom">
+        <a [ngbPopover]="emojiPopover" popoverClass="popover-background" placement="right-bottom">
           {{getSmileEmoji()}}
         </a></span>
     </div>

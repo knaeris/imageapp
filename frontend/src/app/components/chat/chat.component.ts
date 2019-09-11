@@ -82,7 +82,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     deleteMessage(message: Message) {
-        ChatComponent.participant.subscribedMessages = this.getMessages().filter(m => m != message)
+        this.webSocketService.delete(this.getChat().name, JSON.stringify(message));
     }
 
     parsetoDate(timestamp: number) {
@@ -93,7 +93,9 @@ export class ChatComponent implements OnInit, OnDestroy {
         let day = date.getDay();
         let month = date.getMonth();
         let year = date.getFullYear();
-        return hours + ":" + minutes + ":" + seconds;
+        return hours.toString().padStart(2,"0") + ":"
+            + minutes.toString().padStart(2,"0") + ":"
+            + seconds.toString().padStart(2,"0");
     }
 
     leave() {
@@ -109,7 +111,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     @HostListener('window:beforeunload')
-    leaveChatAfterLeavingPage(){
+   private leaveChatAfterLeavingPage(){
         if(!ChatComponent.hasLeft){
             this.leave();
             ChatComponent.hasLeft = true;

@@ -23,7 +23,7 @@
     border-radius: 0 15px 15px 0 !important;
     background-color: rgba(0,0,0,0.3) !important;
     border:0 !important;
-    color: lawngreen !important;
+    color: #1dc813 !important;
     cursor: pointer;
 }
 
@@ -34,4 +34,13 @@
     border-width: 0 3px 3px 0;
     display: inline-block;
     padding: 3px;
+}
+
+.popover-background {
+    background: black !important;
+    border-color: #1dc813;
+}
+
+.bs-popover-auto[x-placement^=right]>.arrow::after, .bs-popover-right>.arrow::after{
+    border-right-color: #1dc813;
 }

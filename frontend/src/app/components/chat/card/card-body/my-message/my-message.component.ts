@@ -5,6 +5,7 @@ import {WebsocketService} from "../../../../../services/websocket.service";
 import {ChatService} from "../../../../../services/chat.service";
 import {AppComponent} from "../../../../../app.component";
 import {ChatComponent} from "../../../chat.component";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-my-message',
@@ -16,15 +17,15 @@ export class MyMessageComponent extends CardBodyComponent implements OnInit {
   @Input() message: Message;
 
   constructor(webSocketService: WebsocketService,
-              chatService: ChatService) {
+              chatService: ChatService,
+              private modalService: NgbModal) {
     super(webSocketService, chatService);
   }
 
   ngOnInit() {
   }
 
-  deletes(){
+  delete(){
     super.deleteMessage(this.message);
   }
-
 }

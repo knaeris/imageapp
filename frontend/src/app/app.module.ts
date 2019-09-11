@@ -56,7 +56,7 @@ import { EmojiComponent } from './components/chat/card/card-footer/emoji/emoji.c
         ContactComponent,
         ContactInfoComponent,
         SystemMessageComponent,
-        EmojiComponent,
+        EmojiComponent
 
     ],
     imports: [

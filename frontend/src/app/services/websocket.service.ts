@@ -38,19 +38,25 @@ export class WebsocketService {
                 if (!currentUser.id) {
                     this.composeCurrentUser(wsMessage, currentUser);
                 }
+                if(wsMessage.payload.hasOwnProperty("sender") && wsMessage.payload.sender == null){
+                    wsMessage.payload.payload += " liitus ruumiga";
+                    this.pushToMessages(wsMessage, currentUser);
+                }
                 this.getAllParticipants(room);
                 break;
             case Operationenum.SEND :
                 this.pushToMessages(wsMessage, currentUser);
                 break;
             case Operationenum.DELETE:
-
+                this.removeFromMessages(wsMessage,currentUser);
                 break;
             case Operationenum.EXCEPTION :
 
                 break;
             case Operationenum.LEAVE :
+                if(wsMessage.payload.sender == null){
                     wsMessage.payload.payload += " lahkus ruumist";
+                }
                     this.pushToMessages(wsMessage, currentUser);
                     this.getAllParticipants(room);
                 break;
@@ -70,6 +76,11 @@ export class WebsocketService {
         participant.subscribedMessages.push(message);
     }
 
+    private removeFromMessages(wsMessage: Socketmessage, participant: Person){
+        let message: Message = wsMessage.payload as Message;
+        participant.subscribedMessages = participant.subscribedMessages.filter(m => m.timeStamp != message.timeStamp);
+    }
+
     disconnect() {
         if (this.stompClient !== null) {
             this.stompClient.disconnect();
@@ -84,7 +95,7 @@ export class WebsocketService {
     }
 
     sendMessage(message, room: string) {
-        this.stompClient.send("/app/send/message/" + room, {}, message);
+        this.stompClient.send("/app/send/" + room, {}, message);
     }
 
     join(newPerson, room: string) {
@@ -95,6 +106,9 @@ export class WebsocketService {
         this.stompClient.send("/app/leave/" + room, {}, name);
     }
 
+    delete(room, message){
+        this.stompClient.send("/app/delete/" + room, {}, message);
+    }
 
     private getAllParticipants(room) {
         let ppl$: Observable<Person[]> = this.chatService.getParticipantsOf(room.name);

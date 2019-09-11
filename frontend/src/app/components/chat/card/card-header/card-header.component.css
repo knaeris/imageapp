@@ -27,7 +27,7 @@
     position: absolute;
     right: 10px;
     top: 10px;
-    color: lawngreen;
+    color: #1dc813;
     cursor: pointer;
     font-size: 20px;
 }
@@ -36,7 +36,7 @@
     position: absolute;
     padding: 15px 0;
     background-color: rgba(0,0,0,0.5);
-    color: lawngreen;
+    color: #1dc813;
     border-radius: 15px;
     top: 30px;
     right: 15px;
@@ -63,7 +63,7 @@
 
 .user_info span{
     font-size: 20px;
-    color: lawngreen;
+    color: #1dc813;
 }
 .user_info p{
     font-size: 10px;
