@@ -2,7 +2,7 @@ import {Operationenum} from "./operationenum";
 import {Person} from "./person";
 import {Message} from "./message";
 
-export class Socketmessage{
+export class Response{
     operation: Operationenum;
     payload: any;
 

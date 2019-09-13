@@ -8,7 +8,7 @@ import {map} from "rxjs/operators";
 })
 export class BaseService{
 
-    private apiUrl = "http://localhost:8080/api/";
+    private apiUrl = "http://134.209.21.45:8080/talk-0.0.1-SNAPSHOT/api/";
 
     constructor(private http: HttpClient) {
     }

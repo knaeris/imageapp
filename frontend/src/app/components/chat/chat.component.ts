@@ -5,7 +5,7 @@ import {WebsocketService} from "../../services/websocket.service";
 import {ChatService} from "../../services/chat.service";
 import {Operationenum} from "../../model/operationenum";
 import {Message} from "../../model/message";
-import {Socketmessage} from "../../model/socketmessage";
+import {Response} from "../../model/response";
 
 @Component({
     selector: 'app-chat',
@@ -33,15 +33,14 @@ export class ChatComponent implements OnInit, OnDestroy {
         if (!ChatComponent.chat || (ChatComponent.chat && ChatComponent.chat.name != room)) {
             ChatComponent.chat = new ChatSession(room);
             ChatComponent.participant = new Person("");
-            this.webSocketService.connect(ChatComponent.chat, ChatComponent.participant);
-            setTimeout(() => {
-                this.join(participantName, room);
-            }, 501);
+            this.webSocketService.connects(ChatComponent.chat, ChatComponent.participant, ()=> {
+                this.join(participantName, room)
+            });
         }
     }
 
     private join(participantName: string, room: string) {
-        let message: Socketmessage = new Socketmessage(null);
+        let message: Response = new Response(null);
         message.payload = participantName;
         message.operation = Operationenum.JOIN;
         this.webSocketService.join(JSON.stringify(message), room);
@@ -56,7 +55,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         let sender = this.composeSender();
         let message = new Message(content, sender);
         let messageJSON: string = JSON.stringify(message);
-        let messageForSending: Socketmessage = new Socketmessage(null);
+        let messageForSending: Response = new Response(null);
         messageForSending.payload = messageJSON;
         messageForSending.operation = Operationenum.SEND;
         return messageForSending;
@@ -100,7 +99,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     leave() {
         if (this.getChat() && this.getParticipant()) {
-            let sm: Socketmessage = new Socketmessage(null);
+            let sm: Response = new Response(null);
             sm.payload = this.getParticipant().name;
             sm.operation = Operationenum.LEAVE;
             this.webSocketService.leave(this.getChat().name, JSON.stringify(sm));

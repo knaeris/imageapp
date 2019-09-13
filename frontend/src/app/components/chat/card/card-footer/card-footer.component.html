@@ -3,7 +3,7 @@
   <div *ngIf="getChat()" class="input-group">
     <div class="input-group-append">
       <ng-template #emojiPopover>
-        <app-emoji (emojiEmitter)="gg($event)" [emojis]="getEmojis()"></app-emoji>
+        <app-emoji (emojiEmitter)="appendSmile($event)" [emojis]="getEmojis()"></app-emoji>
       </ng-template>
       <span class="input-group-text attach_btn">
         <a [ngbPopover]="emojiPopover" popoverClass="popover-background" placement="right-bottom">

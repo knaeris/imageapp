@@ -23,7 +23,6 @@ export class CardFooterComponent extends CardComponent implements OnInit {
     }
 
     sendMessage() {
-        console.log(this.content)
         this.content.trim();
         if (this.content != "") {
             super.sendMessage(this.content)
@@ -38,9 +37,7 @@ export class CardFooterComponent extends CardComponent implements OnInit {
             0x1F431, 0x1F42A, 0x1F439, 0x1F424].map(item => String.fromCodePoint(item));
     }
 
-    gg(item) {
-        console.log(this.content)
-        console.log(item)
+    appendSmile(item) {
         return this.content += item;
     }
 
