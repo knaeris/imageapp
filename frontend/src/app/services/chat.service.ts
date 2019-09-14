@@ -23,4 +23,8 @@ export class ChatService extends BaseService{
         return super.get("chat/" + room + "/participants");
     }
 
+    public validateJoinRequest(chatName: string, name: string): Observable<boolean>{
+        return super.get("chat/" + chatName + "/validation/" + name);
+    }
+
 }

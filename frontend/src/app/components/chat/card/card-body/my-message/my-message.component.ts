@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {Message} from "../../../../../model/message";
 import {CardBodyComponent} from "../card-body.component";
 import {WebsocketService} from "../../../../../services/websocket.service";
@@ -10,7 +10,8 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 @Component({
   selector: 'app-my-message',
   templateUrl: './my-message.component.html',
-  styleUrls: ['./my-message.component.css']
+  styleUrls: ['./my-message.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class MyMessageComponent extends CardBodyComponent implements OnInit {
 

@@ -2,7 +2,7 @@ import {Operationenum} from "./operationenum";
 import {Person} from "./person";
 import {Message} from "./message";
 
-export class Response{
+export class ResponseReader{
     operation: Operationenum;
     payload: any;
 
@@ -26,5 +26,16 @@ export class Response{
             return false;
         }
         return true;
+    }
+
+    getOperation(){
+        return this.operation;
+    }
+    getPayLoad(){
+        return this.payload
+    }
+
+    getParsedPayLoad(): Message |  Person{
+        return JSON.parse(this.payload);
     }
 }

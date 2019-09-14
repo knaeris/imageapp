@@ -3,9 +3,7 @@ import {ChatSession} from "../../model/chatsession";
 import {Person} from "../../model/person";
 import {WebsocketService} from "../../services/websocket.service";
 import {ChatService} from "../../services/chat.service";
-import {Operationenum} from "../../model/operationenum";
 import {Message} from "../../model/message";
-import {Response} from "../../model/response";
 
 @Component({
     selector: 'app-chat',
@@ -30,42 +28,34 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     joinChat(room: string, participantName: string) {
-        if (!ChatComponent.chat || (ChatComponent.chat && ChatComponent.chat.name != room)) {
-            ChatComponent.chat = new ChatSession(room);
-            ChatComponent.participant = new Person("");
-            this.webSocketService.connects(ChatComponent.chat, ChatComponent.participant, ()=> {
-                this.join(participantName, room)
-            });
-        }
+        let val = this.chatService.validateJoinRequest(room, participantName).subscribe(nameTaken => {
+            if (nameTaken) {
+                alert(participantName + " nimi on juba ruumis " + room + " hõivatud");
+            } else {
+                if (!ChatComponent.chat || (ChatComponent.chat && ChatComponent.chat.name != room)) {
+                    ChatComponent.chat = new ChatSession(room);
+                    ChatComponent.participant = new Person("");
+                    this.webSocketService.connects(ChatComponent.chat, ChatComponent.participant, () => {
+                        this.join(participantName, room)
+                    });
+                }
+            }
+            val.unsubscribe();
+        })
+
     }
 
     private join(participantName: string, room: string) {
-        let message: Response = new Response(null);
-        message.payload = participantName;
-        message.operation = Operationenum.JOIN;
-        this.webSocketService.join(JSON.stringify(message), room);
+        this.webSocketService.join(participantName, room);
     }
 
     sendMessage(content) {
-        let messageForSending = this.composeMessageForSending(content);
-        this.webSocketService.sendMessage(JSON.stringify(messageForSending), ChatComponent.chat.name);
+        let message = new Message(content, this.getParticipant());
+        this.webSocketService.sendMessage(JSON.stringify(message), ChatComponent.chat.name);
     }
 
-    private composeMessageForSending(content) {
-        let sender = this.composeSender();
-        let message = new Message(content, sender);
-        let messageJSON: string = JSON.stringify(message);
-        let messageForSending: Response = new Response(null);
-        messageForSending.payload = messageJSON;
-        messageForSending.operation = Operationenum.SEND;
-        return messageForSending;
-    }
-
-    private composeSender() {
-        let sender: Person = new Person(this.getParticipant().name);
-        sender.id = this.getParticipant().id;
-        sender.imageUrl = this.getParticipant().imageUrl;
-        return sender;
+    deleteMessage(message: Message) {
+        this.webSocketService.delete(this.getChat().name, JSON.stringify(message));
     }
 
     getChat() {
@@ -80,9 +70,6 @@ export class ChatComponent implements OnInit, OnDestroy {
         return ChatComponent.participant.subscribedMessages;
     }
 
-    deleteMessage(message: Message) {
-        this.webSocketService.delete(this.getChat().name, JSON.stringify(message));
-    }
 
     parsetoDate(timestamp: number) {
         let date = new Date(timestamp)
@@ -92,26 +79,28 @@ export class ChatComponent implements OnInit, OnDestroy {
         let day = date.getDay();
         let month = date.getMonth();
         let year = date.getFullYear();
-        return hours.toString().padStart(2,"0") + ":"
-            + minutes.toString().padStart(2,"0") + ":"
-            + seconds.toString().padStart(2,"0");
+        return hours.toString().padStart(2, "0") + ":"
+            + minutes.toString().padStart(2, "0") + ":"
+            + seconds.toString().padStart(2, "0");
     }
 
     leave() {
         if (this.getChat() && this.getParticipant()) {
-            let sm: Response = new Response(null);
-            sm.payload = this.getParticipant().name;
-            sm.operation = Operationenum.LEAVE;
-            this.webSocketService.leave(this.getChat().name, JSON.stringify(sm));
+            let payload: string = this.getParticipant().name;
+            this.webSocketService.leave(payload, this.getChat().name);
             this.webSocketService.disconnect();
-            ChatComponent.chat = null;
-            ChatComponent.participant = null;
+            this.killLocalSession();
         }
     }
 
+    private killLocalSession() {
+        ChatComponent.chat = null;
+        ChatComponent.participant = null;
+    }
+
     @HostListener('window:beforeunload')
-   private leaveChatAfterLeavingPage(){
-        if(!ChatComponent.hasLeft){
+    private leaveChatAfterLeavingPage() {
+        if (!ChatComponent.hasLeft) {
             this.leave();
             ChatComponent.hasLeft = true;
         }

@@ -1,5 +1,6 @@
-<div class="d-flex justify-content-end mb-4" (click)="delete()">
-  <div class="msg_cotainer_send">
+<div class="d-flex justify-content-end mb-4">
+  <ng-template #button><span class="delete-tooltip" (click)="delete()" >Kustuta</span></ng-template>
+  <div class="msg_cotainer_send" [ngbTooltip]="button" #t="ngbTooltip" triggers="click:blur" (click)="t.open()">
     <span>{{message?.payload}}</span>
     <span class="msg_time_send">{{parsetoDate(message?.timeStamp)}}</span>
   </div>

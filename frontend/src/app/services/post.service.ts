@@ -8,6 +8,6 @@ import {Post} from "../model/post";
 export class PostService extends BaseService {
 
     public getPostById(id: bigint): Post {
-        return super.get("threads/" + id)
+        return super.get("threads/" + id);
     }
 }

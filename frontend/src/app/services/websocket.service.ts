@@ -7,11 +7,12 @@ import {Person} from "../model/person";
 import {ChatService} from "./chat.service";
 import {Observable} from "rxjs";
 import {ChatSession} from "../model/chatsession";
-import {Response} from "../model/response";
+import {ResponseReader} from "../model/responseReader";
 
 @Injectable()
 export class WebsocketService {
-    private serverUrl = 'http://134.209.21.45:8080/talk-0.0.1-SNAPSHOT/socket';
+    private serverUrl = 'http://localhost:8080/socket';
+    /*'http://134.209.21.45:8080/talk-0.0.1-SNAPSHOT/socket';*/
     private stompClient;
     private channel = "/chat/";
 
@@ -21,11 +22,11 @@ export class WebsocketService {
     connects(room: ChatSession, participant: Person, callback) {
         let ws = new SockJS(this.serverUrl);
         this.stompClient = Stomp.over(ws);
-        this.stompClient.debug = null
+        //this.stompClient.debug = null
         const that = this;
         this.stompClient.connect({}, (frame) => {
             that.stompClient.subscribe(that.channel + room.name, (message) => {
-                that.processResponsesByOperation(new Response(message.body), room, participant);
+                that.processResponsesByOperation(new ResponseReader(message.body), room, participant);
             });
             if(callback){
                 callback();
@@ -33,11 +34,11 @@ export class WebsocketService {
         }, this.errorCb);
     };
 
-    processResponsesByOperation(response: Response, room: ChatSession, currentUser: Person) {
-       // console.log("Message Recieved from Server :: " + message);
+    processResponsesByOperation(response: ResponseReader, room: ChatSession, currentUser: Person) {
+        console.log("Message Recieved from Server :: " + response);
         switch (response.operation) {
             case Operationenum.JOIN:
-                this.populateInitiallyCreatedUserWithData(currentUser, response);
+                this.populateLocalUserWithData(currentUser, response);
                 this.sendHasJoinedSystemMessage(response, currentUser);
                 this.populateParticipantsOf(room);
                 break;
@@ -57,25 +58,25 @@ export class WebsocketService {
         }
     }
 
-    private sendHasJoinedSystemMessage(response: Response, currentUser: Person) {
+    private sendHasJoinedSystemMessage(response: ResponseReader, currentUser: Person) {
         let responseContainsMessageObject: boolean = response.payload.timeStamp;
         if (responseContainsMessageObject) {
-            let joiningResponse: Response = this.modifyResponse(response, 'liitus ruumiga');
+            let joiningResponse: ResponseReader = this.modifyResponse(response, 'liitus ruumiga');
             this.convertResponseToSystemMessageForSending(joiningResponse, currentUser);
         }
     }
 
-    private sendHasLeftSystemMessage(wsMessage: Response, currentUser: Person) {
-        let leavingResponse: Response = this.modifyResponse(wsMessage, 'lahkus ruumist');
+    private sendHasLeftSystemMessage(wsMessage: ResponseReader, currentUser: Person) {
+        let leavingResponse: ResponseReader = this.modifyResponse(wsMessage, 'lahkus ruumist');
         this.convertResponseToSystemMessageForSending(leavingResponse, currentUser);
     }
 
-    private convertResponseToSystemMessageForSending(response: Response, currentUser: Person) {
-        let message: Message = this.convertToMessageForSending(response);
+    private convertResponseToSystemMessageForSending(response: ResponseReader, currentUser: Person) {
+        let message: Message = this.convertToMessage(response);
         currentUser.subscribedMessages.push(message);
     }
 
-    private populateInitiallyCreatedUserWithData(currentUser: Person, wsMessage: Response) {
+    private populateLocalUserWithData(currentUser: Person, wsMessage: ResponseReader) {
         if (!currentUser.id) {
             let person: Person = wsMessage.payload;
             currentUser.name = person.name;
@@ -84,8 +85,7 @@ export class WebsocketService {
         }
     }
 
-    private modifyResponse(response: Response, action: string):Response {
-        console.log(response);
+    private modifyResponse(response: ResponseReader, action: string):ResponseReader {
         let system: null = null;
         if (response.payload.hasOwnProperty("sender") && response.payload.sender == system) {
             response.payload.payload += " " + action;
@@ -94,14 +94,14 @@ export class WebsocketService {
         return response;
     }
 
-    private convertToMessageForSending(response: Response): Message {
+    private convertToMessage(response: ResponseReader): Message {
             let message: Message = new Message(response.payload.payload, response.payload.sender);
             response.payload.timeStamp ? message.timeStamp = response.payload.timeStamp: (doNothing) => ({});
             return message;
         }
 
 
-    private deleteMessage(wsMessage: Response, participant: Person){
+    private deleteMessage(wsMessage: ResponseReader, participant: Person){
         let message: Message = wsMessage.payload as Message;
         participant.subscribedMessages = participant.subscribedMessages.filter(m => m.timeStamp != message.timeStamp);
     }
