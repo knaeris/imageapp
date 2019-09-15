@@ -1,7 +1,6 @@
 package imageapp.dao;
 
 import imageapp.domain.Thread;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 public interface ThreadDao extends CrudRepository<Thread, Long> {

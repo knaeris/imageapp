@@ -1,9 +1,8 @@
 package imageapp.controllers;
 
 import imageapp.dao.ImageDao;
-import imageapp.domain.Thread;
 import imageapp.domain.Image;
-import imageapp.util.BeanUtil;
+import imageapp.domain.Thread;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

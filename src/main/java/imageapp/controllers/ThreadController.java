@@ -1,13 +1,9 @@
 package imageapp.controllers;
 
-import imageapp.dao.PostDao;
 import imageapp.dao.ThreadDao;
-import imageapp.domain.Post;
 import imageapp.domain.Thread;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
 
 @RestController
 public class ThreadController {

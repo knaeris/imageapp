@@ -5,7 +5,6 @@ import {Operationenum} from "../model/operationenum";
 import {Message} from "../model/message";
 import {Person} from "../model/person";
 import {ChatService} from "./chat.service";
-import {Observable} from "rxjs";
 import {ChatSession} from "../model/chatsession";
 import {ResponseReader} from "../model/responseReader";
 
@@ -48,11 +47,15 @@ export class WebsocketService {
             case Operationenum.DELETE:
                 this.deleteMessage(response,currentUser);
                 break;
-            case Operationenum.EXCEPTION :
-
-                break;
             case Operationenum.LEAVE :
                 this.sendHasLeftSystemMessage(response, currentUser);
+                this.populateParticipantsOf(room);
+                break;
+            case Operationenum.CHANGE :
+                if(currentUser.name == response.payload.oldName){
+                    currentUser.name = response.payload.newName;
+                }
+                this.sendHasChangedName(response, currentUser);
                 this.populateParticipantsOf(room);
                 break;
         }
@@ -69,6 +72,11 @@ export class WebsocketService {
     private sendHasLeftSystemMessage(wsMessage: ResponseReader, currentUser: Person) {
         let leavingResponse: ResponseReader = this.modifyResponse(wsMessage, 'lahkus ruumist');
         this.convertResponseToSystemMessageForSending(leavingResponse, currentUser);
+    }
+
+    private sendHasChangedName(wsMessage: ResponseReader, currentUser: Person){
+        let changeResponse: ResponseReader = this.modifyResponse(wsMessage, 'muutis enda nimeks : ' + currentUser.name);
+        this.convertResponseToSystemMessageForSending(changeResponse,currentUser);
     }
 
     private convertResponseToSystemMessageForSending(response: ResponseReader, currentUser: Person) {
@@ -90,6 +98,9 @@ export class WebsocketService {
         if (response.payload.hasOwnProperty("sender") && response.payload.sender == system) {
             response.payload.payload += " " + action;
             return response;
+        } else if(response.payload.hasOwnProperty("message")){
+            response.payload = JSON.parse(response.payload.message) as Message;
+            response.payload.payload += " " + action;
         }
         return response;
     }
@@ -123,16 +134,20 @@ export class WebsocketService {
         this.stompClient.send("/app/send/" + room, {}, message);
     }
 
-    join(newPerson, room: string) {
-        this.stompClient.send("/app/join/" + room, {}, newPerson);
+    join(name: string, room: string) {
+        this.stompClient.send("/app/join/" + room, {}, name);
     }
 
-    leave(room, name) {
+    leave(room: string, name: string) {
         this.stompClient.send("/app/leave/" + room, {}, name);
     }
 
-    delete(room, message){
+    delete(room: string, message){
         this.stompClient.send("/app/delete/" + room, {}, message);
+    }
+
+    changeName(room: string, name: string, id: number){
+        this.stompClient.send("/app/changeName/" + room + "/" + name, {}, id)
     }
 
     private populateParticipantsOf(room) {

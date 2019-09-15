@@ -3,7 +3,6 @@ package imageapp.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;

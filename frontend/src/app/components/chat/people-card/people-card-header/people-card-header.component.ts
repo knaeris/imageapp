@@ -31,11 +31,8 @@ export class PeopleCardHeaderComponent extends PeopleCardComponent implements On
     }
 
     changeName() {
-       /* let id = parseInt(sessionStorage.getItem("X-ID"));
-        this.chat$ = this.chatService.changeName(this.chat.name, this.personName, id);
-        this.chat$.subscribe(val => {
-            this.chat = <ChatSession>val
-        });*/
+       super.changeName(this.personName);
+       this.personName = "";
 
     }
 }

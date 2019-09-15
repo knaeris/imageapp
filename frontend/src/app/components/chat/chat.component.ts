@@ -29,7 +29,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     joinChat(room: string, participantName: string) {
         this.leave();
-        let val = this.chatService.validateJoinRequest(room, participantName).subscribe(nameTaken => {
+        let val = this.chatService.validateName(room, participantName)
+            .subscribe(nameTaken => {
             if (nameTaken) {
                 alert(participantName + " nimi on juba ruumis " + room + " hõivatud");
             } else {
@@ -106,6 +107,18 @@ export class ChatComponent implements OnInit, OnDestroy {
             this.leave();
             ChatComponent.hasLeft = true;
         }
+    }
+
+    changeName(name: string){
+        let val = this.chatService.validateName(this.getChat().name, name)
+            .subscribe(nameTaken => {
+                if(nameTaken){
+                    alert(name + " juba eksisteerib ruumis")
+                } else {
+                    this.webSocketService.changeName(this.getChat().name, name, this.getParticipant().id);
+                }
+                val.unsubscribe();
+            } )
     }
 
 }
