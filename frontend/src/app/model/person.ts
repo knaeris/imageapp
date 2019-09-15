@@ -13,10 +13,11 @@ export class Person implements Websocketmessage{
 
     subscribedMessages: Message[] = [];
 
-
-    constructor(name: string) {
-        this.name = name;
+    constructor(person: any){
+        if(person){
+            this.id = person.id;
+            this.name = person.name;
+            this.imageUrl = person.imageUrl;
+        }
     }
-
-
 }

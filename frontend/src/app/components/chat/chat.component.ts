@@ -28,6 +28,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
 
     joinChat(room: string, participantName: string) {
+        this.leave();
         let val = this.chatService.validateJoinRequest(room, participantName).subscribe(nameTaken => {
             if (nameTaken) {
                 alert(participantName + " nimi on juba ruumis " + room + " hõivatud");
@@ -39,18 +40,19 @@ export class ChatComponent implements OnInit, OnDestroy {
                         this.join(participantName, room)
                     });
                 }
-            }
+           }
             val.unsubscribe();
         })
 
     }
 
     private join(participantName: string, room: string) {
-        this.webSocketService.join(participantName, room);
+        this.webSocketService.join(participantName, room)
     }
 
     sendMessage(content) {
-        let message = new Message(content, this.getParticipant());
+        let sender: Person =  new Person(this.getParticipant())
+        let message = new Message(content, sender);
         this.webSocketService.sendMessage(JSON.stringify(message), ChatComponent.chat.name);
     }
 
@@ -87,8 +89,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     leave() {
         if (this.getChat() && this.getParticipant()) {
             let payload: string = this.getParticipant().name;
-            this.webSocketService.leave(payload, this.getChat().name);
-            this.webSocketService.disconnect();
+            this.webSocketService.leave(this.getChat().name, payload);
+           this.webSocketService.disconnect();
             this.killLocalSession();
         }
     }

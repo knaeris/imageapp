@@ -19,7 +19,7 @@ export class WebsocketService {
     constructor(private chatService: ChatService) {
     }
 
-    connects(room: ChatSession, participant: Person, callback) {
+     connects(room: ChatSession, participant: Person, callback){
         let ws = new SockJS(this.serverUrl);
         this.stompClient = Stomp.over(ws);
         //this.stompClient.debug = null
@@ -136,12 +136,9 @@ export class WebsocketService {
     }
 
     private populateParticipantsOf(room) {
-        let ppl$: Observable<Person[]> = this.chatService.getParticipantsOf(room.name);
-        let ppl = ppl$.subscribe(value => {
+        let ppl = this.chatService.getParticipantsOf(room.name).subscribe(value => {
             room.participants = value;
-        });
-        setTimeout(() => {
             ppl.unsubscribe();
-        }, 100)
+        });
     }
 }
