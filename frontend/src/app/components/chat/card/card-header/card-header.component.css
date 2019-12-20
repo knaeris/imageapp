@@ -27,7 +27,7 @@
     position: absolute;
     right: 10px;
     top: 10px;
-    color: #1dc813;
+    color: #000000;
     cursor: pointer;
     font-size: 20px;
 }
@@ -36,7 +36,7 @@
     position: absolute;
     padding: 15px 0;
     background-color: rgba(0,0,0,0.5);
-    color: #1dc813;
+    color: #000000;
     border-radius: 15px;
     top: 30px;
     right: 15px;
@@ -63,11 +63,11 @@
 
 .user_info span{
     font-size: 20px;
-    color: #1dc813;
+    color: #000000;
 }
 .user_info p{
     font-size: 10px;
-    color: rgba(255,255,255,0.6);
+    color: black;
 }
 
 .user_img{

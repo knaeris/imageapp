@@ -12,9 +12,7 @@
 }
 
 .type_msg{
-    background-color: rgba(0,0,0,0.3) !important;
     border:0 !important;
-    color:white !important;
     height: 60px !important;
     overflow-y: auto;
 }
@@ -23,7 +21,7 @@
     border-radius: 0 15px 15px 0 !important;
     background-color: rgba(0,0,0,0.3) !important;
     border:0 !important;
-    color: #1dc813 !important;
+    color: #000000 !important;
     cursor: pointer;
 }
 
@@ -37,10 +35,10 @@
 }
 
 .popover-background {
-    background: black !important;
-    border-color: #1dc813;
+    background: white !important;
+    border-color: #000000;
 }
 
 .bs-popover-auto[x-placement^=right]>.arrow::after, .bs-popover-right>.arrow::after{
-    border-right-color: #1dc813;
+    border-right-color: #000000;
 }

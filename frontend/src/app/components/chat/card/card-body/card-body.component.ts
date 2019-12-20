@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild} from '@angular/core';
 import {CardComponent} from "../card.component";
 import {WebsocketService} from "../../../../services/websocket.service";
 import {ChatService} from "../../../../services/chat.service";

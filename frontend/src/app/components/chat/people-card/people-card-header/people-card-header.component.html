@@ -2,8 +2,8 @@
   <div class="input-group">
     <input type="text" placeholder="nimi"  [(ngModel)]="personName" class="form-control search">
     <div class="input-group-prepend">
-      <span class="input-group-text search_btn">
-        <a *ngIf="getChat()" (click)="changeName()" class="matrix-green">Muuda</a></span>
+      <span class="input-group-text search_btn" *ngIf="getChat()">
+        <a (click)="changeName()" class="matrix-green">Muuda</a></span>
     </div>
   </div>
   <br>

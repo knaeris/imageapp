@@ -3,7 +3,7 @@
     margin-bottom: auto;
     margin-right: 10px;
     border-radius: 25px;
-    background-color: #1dc813;
+    background-color: #000000;
     padding: 10px;
     position: relative;
     word-break: break-word;
@@ -14,7 +14,7 @@
     position: absolute;
     right:0;
     bottom: -15px;
-    color: rgba(255,255,255,0.5);
+    color: rgba(44, 15, 24, 0.5);
     font-size: 10px;
 }
 
